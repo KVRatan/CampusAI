@@ -9,7 +9,7 @@ import CustomButton from "../../components/CustomButton";
 const Subject = () => {
   const [data, setData] = useState({
     name: "",
-    code: "",
+    _id: "",
     branch: "",
     semester: "",
     credits: "",
@@ -36,6 +36,7 @@ const Subject = () => {
           Authorization: `Bearer ${userToken}`,
         },
       });
+      console.log(response);
       if (response.data.success) {
         setSubject(response.data.data);
       } else {
@@ -85,7 +86,7 @@ const Subject = () => {
       };
       let response;
       if (isEditing) {
-        response = await axiosWrapper.patch(
+        response = await axiosWrapper.put(
           `/subject/${selectedSubjectId}`,
           data,
           {
@@ -100,7 +101,7 @@ const Subject = () => {
       toast.dismiss();
       if (response.data.success) {
         toast.success(response.data.message);
-        setData({ name: "", code: "", branch: "", semester: "", credits: "" });
+        setData({ name: "", _id: "", branch: "", semester: "", credits: "" });
         setShowAddForm(false);
         setIsEditing(false);
         setSelectedSubjectId(null);
@@ -122,7 +123,7 @@ const Subject = () => {
   const editSubjectHandler = (subject) => {
     setData({
       name: subject.name,
-      code: subject.code,
+      _id: subject._id,
       branch: subject.branch?._id,
       semester: subject.semester,
       credits: subject.credits,
@@ -169,7 +170,7 @@ const Subject = () => {
             if (!showAddForm) {
               setData({
                 name: "",
-                code: "",
+                _id: "",
                 branch: "",
                 semester: "",
                 credits: "",
@@ -202,14 +203,14 @@ const Subject = () => {
             />
           </div>
           <div className="w-[40%] mt-4">
-            <label htmlFor="code" className="leading-7 text-sm">
-              Enter Subject Code
+            <label htmlFor="_id" className="leading-7 text-sm">
+              Enter Subject _id
             </label>
             <input
               type="text"
-              id="code"
-              value={data.code}
-              onChange={(e) => setData({ ...data, code: e.target.value })}
+              id="_id"
+              value={data._id}
+              onChange={(e) => setData({ ...data, _id: e.target.value })}
               className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
@@ -287,7 +288,7 @@ const Subject = () => {
               <thead>
                 <tr className="bg-blue-500 text-white">
                   <th className="py-4 px-6 text-left font-semibold">Name</th>
-                  <th className="py-4 px-6 text-left font-semibold">Code</th>
+                  <th className="py-4 px-6 text-left font-semibold">_id</th>
                   <th className="py-4 px-6 text-left font-semibold">Branch</th>
                   <th className="py-4 px-6 text-left font-semibold">
                     Semester
@@ -304,7 +305,7 @@ const Subject = () => {
                   subject.map((item, index) => (
                     <tr key={index} className="border-b hover:bg-blue-50">
                       <td className="py-4 px-6">{item.name}</td>
-                      <td className="py-4 px-6">{item.code}</td>
+                      <td className="py-4 px-6">{item._id}</td>
                       <td className="py-4 px-6">{item.branch?.name}</td>
                       <td className="py-4 px-6">{item.semester}</td>
                       <td className="py-4 px-6">{item.credits}</td>

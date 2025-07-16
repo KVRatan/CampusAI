@@ -9,17 +9,32 @@ import Timetable from "./Timetable";
 import Material from "./Material";
 import UpdatePasswordLoggedIn from "../../components/UpdatePasswordLoggedIn";
 import Profile from "./Profile";
+import ViewAttendance from "./ViewAttendance";
+import FeedbackStudent from  "./FeedbackStudent"; 
+
+const examDetailsUrl = (userDetails) => {
+  return `file:///C:/Users/ratan/dummy-data-display-main/index.html?user=${encodeURIComponent(userDetails)}`;
+};
+
 
 const MENU_ITEMS = [
   { id: "home", label: "Home", component: null },
   { id: "timetable", label: "Timetable", component: Timetable },
   { id: "material", label: "Material", component: Material },
   { id: "notice", label: "Notice", component: Notice },
+  { id: "feedback", label: "Feedback", component: FeedbackStudent },
   {
     id: "updatepassword",
     label: "Update Password",
     component: UpdatePasswordLoggedIn,
   },
+  {
+    id: "attendance",
+    label: "My Attendance",
+    component: ViewAttendance,
+  },
+  
+
 ];
 
 const Home = () => {

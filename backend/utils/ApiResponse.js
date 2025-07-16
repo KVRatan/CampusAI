@@ -10,8 +10,8 @@ class ApiResponse {
     return new ApiResponse(409, null, message);
   }
 
-  static success(data, message = "Success") {
-    return new ApiResponse(200, data, message);
+  static success(message = "Success") {
+  return new ApiResponse(200, message);
   }
 
   static created(data, message = "Created successfully") {

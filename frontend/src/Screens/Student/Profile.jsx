@@ -1,4 +1,6 @@
 import React from "react";
+import { useState, useEffect } from "react";
+
 
 const Profile = ({ profileData }) => {
   if (!profileData) return null;
@@ -11,17 +13,16 @@ const Profile = ({ profileData }) => {
     });
   };
 
+
   return (
     <div className="max-w-6xl mx-auto p-8">
       {/* Header Section */}
       <div className="flex items-center gap-8 mb-12 border-b pb-8">
-        <img
-          src={`${process.env.REACT_APP_API_URL}/uploads/${profileData.profile}`}
-          alt="Profile"
+       <img
+          src={`${process.env.REACT_APP_API_URL}/upload/${profileData.profile}`}
           className="w-40 h-40 rounded-full object-cover ring-4 ring-blue-500 ring-offset-4"
           onError={(e) => {
-            e.target.src =
-              "https://images.unsplash.com/photo-1744315900478-fa44dc6a4e89?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            e.target.src = "./assets/default.png";
           }}
         />
         <div>
@@ -29,7 +30,7 @@ const Profile = ({ profileData }) => {
             {`${profileData.firstName} ${profileData.middleName} ${profileData.lastName}`}
           </h1>
           <p className="text-lg text-gray-600 mb-1">
-            {profileData.enrollmentNo}
+            {profileData.regNo}
           </p>
           <p className="text-lg text-blue-600 font-medium">
             {profileData.branchId.name}
@@ -72,6 +73,12 @@ const Profile = ({ profileData }) => {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">
+                library ID
+              </label>
+              <p className="text-gray-900">{profileData.libraryId}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
                 Semester
               </label>
               <p className="text-gray-900">{profileData.semester}</p>
@@ -92,8 +99,8 @@ const Profile = ({ profileData }) => {
               <p className="text-gray-900">{profileData.address}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-500">City</label>
-              <p className="text-gray-900">{profileData.city}</p>
+              <label className="text-sm font-medium text-gray-500">district</label>
+              <p className="text-gray-900">{profileData.district}</p>
             </div>
             <div>
               <label className="text-sm font-medium text-gray-500">State</label>

@@ -47,15 +47,13 @@ const getAllDetailsController = async (req, res, next) => {
   }
 };
 
-const generateEmployeeId = () => {
-  return Math.floor(100000 + Math.random() * 900000);
-};
+
 
 const registerAdminController = async (req, res, next) => {
   try {
-    const { email, phone } = req.body;
+    const { email, phone ,dob} = req.body;
 
-    const profile = req.file.filename;
+    const profile =req.file ? req.file.filename: null;
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return ApiResponse.badRequest("Invalid email format").send(res);
@@ -74,14 +72,16 @@ const registerAdminController = async (req, res, next) => {
         "Admin with these details already exists"
       ).send(res);
     }
-
-    const employeeId = generateEmployeeId();
+  const dobDate = new Date(dob);
+  const formattedDob = `${String(dobDate.getDate()).padStart(2, '0')}-${String(dobDate.getMonth() + 1).padStart(2, '0')}-${dobDate.getFullYear()}`;
+    const plainPassword = req.body.password || formattedDob;
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+    
 
     const user = await adminDetails.create({
       ...req.body,
-      employeeId,
       profile,
-      password: "admin123",
+      password: hashedPassword,
     });
 
     const sanitizedUser = await adminDetails

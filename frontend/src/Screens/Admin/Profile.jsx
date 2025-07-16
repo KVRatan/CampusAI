@@ -16,12 +16,11 @@ const Profile = ({ profileData }) => {
       {/* Header Section */}
       <div className="flex items-center gap-8 mb-12 border-b pb-8">
         <img
-          src={profileData.profile}
+          src={`${process.env.REACT_APP_API_URL}/uploads/${profileData.file}`}
           alt="Profile"
           className="w-40 h-40 rounded-full object-cover ring-4 ring-blue-500 ring-offset-4"
           onError={(e) => {
-            e.target.src =
-              "https://images.unsplash.com/photo-1744315900478-fa44dc6a4e89?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+            e.target.src = "/assets/default.png";
           }}
         />
         <div>
@@ -33,7 +32,6 @@ const Profile = ({ profileData }) => {
           </p>
           <p className="text-lg text-blue-600 font-medium">
             {profileData.designation}
-            {profileData.isSuperAdmin && " (Super Admin)"}
           </p>
         </div>
       </div>
@@ -92,12 +90,6 @@ const Profile = ({ profileData }) => {
                 Status
               </label>
               <p className="text-gray-900 capitalize">{profileData.status}</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-500">Role</label>
-              <p className="text-gray-900 capitalize">
-                {profileData.isSuperAdmin ? "Super Admin" : "Admin"}
-              </p>
             </div>
           </div>
         </div>

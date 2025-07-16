@@ -8,13 +8,14 @@ import DeleteConfirm from "../../components/DeleteConfirm";
 import CustomButton from "../../components/CustomButton";
 const Admin = () => {
   const [data, setData] = useState({
+    employeeId: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     profile: "",
     address: "",
-    city: "",
+    district: "",
     state: "",
     pincode: "",
     country: "",
@@ -130,13 +131,14 @@ const Admin = () => {
 
   const editAdminHandler = (admin) => {
     setData({
+      employeeId: admin.employeeId || "",
       firstName: admin.firstName || "",
       lastName: admin.lastName || "",
       email: admin.email || "",
       phone: admin.phone || "",
       profile: admin.profile || "",
       address: admin.address || "",
-      city: admin.city || "",
+      district: admin.district || "",
       state: admin.state || "",
       pincode: admin.pincode || "",
       country: admin.country || "",
@@ -191,7 +193,7 @@ const Admin = () => {
       phone: "",
       profile: "",
       address: "",
-      city: "",
+      district: "",
       state: "",
       pincode: "",
       country: "",
@@ -253,12 +255,13 @@ const Admin = () => {
               <input type="file" onChange={(e) => setFile(e.target.files[0])} />
             </div>
             {[
+              { label: "Employee ID", field: "employeeId" },
               { label: "First Name", field: "firstName" },
               { label: "Last Name", field: "lastName" },
               { label: "Email", field: "email" },
               { label: "Phone", field: "phone" },
               { label: "Address", field: "address" },
-              { label: "City", field: "city" },
+              { label: "district", field: "district" },
               { label: "State", field: "state" },
               { label: "Pincode", field: "pincode" },
               { label: "Country", field: "country" },

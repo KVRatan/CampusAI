@@ -9,13 +9,14 @@ import CustomButton from "../../components/CustomButton";
 
 const Faculty = () => {
   const [data, setData] = useState({
+    employeeId: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     profile: "",
     address: "",
-    city: "",
+    district: "",
     state: "",
     pincode: "",
     country: "",
@@ -167,13 +168,14 @@ const Faculty = () => {
 
   const editFacultyHandler = (faculty) => {
     setData({
+      employeeId: faculty.employeeId || "",
       firstName: faculty.firstName || "",
       lastName: faculty.lastName || "",
       email: faculty.email || "",
       phone: faculty.phone || "",
       profile: faculty.profile || "",
       address: faculty.address || "",
-      city: faculty.city || "",
+      district: faculty.district || "",
       state: faculty.state || "",
       pincode: faculty.pincode || "",
       country: faculty.country || "",
@@ -225,13 +227,14 @@ const Faculty = () => {
 
   const resetForm = () => {
     setData({
+      employeeId: "",
       firstName: "",
       lastName: "",
       email: "",
       phone: "",
       profile: "",
       address: "",
-      city: "",
+      district: "",
       state: "",
       pincode: "",
       country: "",
@@ -293,12 +296,13 @@ const Faculty = () => {
               <input type="file" onChange={(e) => setFile(e.target.files[0])} />
             </div>
             {[
+              { label: "Employee ID", field: "employeeId" },
               { label: "First Name", field: "firstName" },
               { label: "Last Name", field: "lastName" },
               { label: "Email", field: "email" },
               { label: "Phone", field: "phone" },
               { label: "Address", field: "address" },
-              { label: "City", field: "city" },
+              { label: "district", field: "district" },
               { label: "State", field: "state" },
               { label: "Pincode", field: "pincode" },
               { label: "Country", field: "country" },

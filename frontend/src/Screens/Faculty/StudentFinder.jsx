@@ -7,7 +7,7 @@ import NoData from "../../components/NoData";
 
 const StudentFinder = () => {
   const [searchParams, setSearchParams] = useState({
-    enrollmentNo: "",
+    regNo: "",
     name: "",
     semester: "",
     branch: "",
@@ -113,8 +113,8 @@ const StudentFinder = () => {
               </label>
               <input
                 type="text"
-                name="enrollmentNo"
-                value={searchParams.enrollmentNo}
+                name="regNo"
+                value={searchParams.regNo}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter enrollment number"
@@ -226,8 +226,8 @@ const StudentFinder = () => {
                           alt={`${student.firstName}'s profile`}
                           className="w-12 h-12 object-cover rounded-full"
                           onError={(e) => {
-                            e.target.src =
-                              "https://images.unsplash.com/photo-1744315900478-fa44dc6a4e89?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+                           //e.target.onerror = null;
+                           e.target.src = "/assets/default.png";
                           }}
                         />
                       </td>
@@ -236,7 +236,7 @@ const StudentFinder = () => {
                         {student.lastName}
                       </td>
                       <td className="px-6 py-4 border-b">
-                        {student.enrollmentNo}
+                        {student.regNo}
                       </td>
                       <td className="px-6 py-4 border-b">{student.semester}</td>
                       <td className="px-6 py-4 border-b">
@@ -283,8 +283,7 @@ const StudentFinder = () => {
                     alt={`${selectedStudent.firstName}'s profile`}
                     className="w-full h-auto object-cover rounded-lg"
                     onError={(e) => {
-                      e.target.src =
-                        "https://images.unsplash.com/photo-1744315900478-fa44dc6a4e89?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+                      e.target.src = "/assets/default.png";
                     }}
                   />
                 </div>
@@ -323,7 +322,7 @@ const StudentFinder = () => {
                   <div className="space-y-2">
                     <p>
                       <span className="font-medium">Enrollment No:</span>{" "}
-                      {selectedStudent.enrollmentNo}
+                      {selectedStudent.regNo}
                     </p>
                     <p>
                       <span className="font-medium">Branch:</span>{" "}
@@ -362,8 +361,8 @@ const StudentFinder = () => {
                   </h3>
                   <div className="space-y-2">
                     <p>
-                      <span className="font-medium">City:</span>{" "}
-                      {selectedStudent.city}
+                      <span className="font-medium">district:</span>{" "}
+                      {selectedStudent.district}
                     </p>
                     <p>
                       <span className="font-medium">State:</span>{" "}

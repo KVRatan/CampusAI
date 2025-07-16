@@ -26,7 +26,7 @@ const loginFacultyController = async (req, res) => {
     return ApiResponse.success({ token }, "Login successful").send(res);
   } catch (error) {
     console.error("Login Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -39,18 +39,16 @@ const getAllFacultyController = async (req, res) => {
     return ApiResponse.success(users, "Faculty Details Found!").send(res);
   } catch (error) {
     console.error("Get All Faculty Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
-const generateEmployeeId = () => {
-  return Math.floor(100000 + Math.random() * 900000);
-};
+
 
 const registerFacultyController = async (req, res) => {
   try {
-    const { email, phone } = req.body;
-    const profile = req.file.filename;
+    const { email, phone ,dob} = req.body;
+    const profile = req.file ? req.file.filename : null;
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return ApiResponse.badRequest("Invalid email format").send(res);
@@ -69,13 +67,15 @@ const registerFacultyController = async (req, res) => {
       ).send(res);
     }
 
-    const employeeId = generateEmployeeId();
-
+    const dobDate = new Date(dob);
+      const formattedDob = `${String(dobDate.getDate()).padStart(2, '0')}-${String(dobDate.getMonth() + 1).padStart(2, '0')}-${dobDate.getFullYear()}`;
+        const plainPassword = req.body.password || formattedDob;
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+  
     const user = await facultyDetails.create({
       ...req.body,
-      employeeId,
       profile,
-      password: "faculty123",
+      password: hashedPassword,
     });
 
     const sanitizedUser = await facultyDetails
@@ -87,7 +87,7 @@ const registerFacultyController = async (req, res) => {
     ).send(res);
   } catch (error) {
     console.error("Register Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -158,7 +158,7 @@ const updateFacultyController = async (req, res) => {
     return ApiResponse.success(updatedUser, "Updated Successfully!").send(res);
   } catch (error) {
     console.error("Update Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -175,8 +175,8 @@ const deleteFacultyController = async (req, res) => {
 
     return ApiResponse.success(null, "Deleted Successfully!").send(res);
   } catch (error) {
-    console.error("Delete Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    console.error("Delete Error: ", error);internalServerError(error.message);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -191,7 +191,7 @@ const getMyFacultyDetailsController = async (req, res) => {
     return ApiResponse.success(user, "My Details Found!").send(res);
   } catch (error) {
     console.error("My Details Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -224,7 +224,7 @@ const sendFacultyResetPasswordEmail = async (req, res) => {
     return ApiResponse.success(null, "Reset Mail Sent Successfully").send(res);
   } catch (error) {
     console.error("Forgot Password Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -265,7 +265,7 @@ const updateFacultyPasswordHandler = async (req, res) => {
     );
   } catch (error) {
     console.error("Password Update Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 
@@ -311,7 +311,7 @@ const updateLoggedInPasswordController = async (req, res) => {
     return ApiResponse.success(null, "Password updated successfully").send(res);
   } catch (error) {
     console.error("Update Password Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
 

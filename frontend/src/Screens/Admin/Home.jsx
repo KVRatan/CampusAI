@@ -12,6 +12,8 @@ import { setUserData } from "../../redux/actions";
 import axiosWrapper from "../../utils/AxiosWrapper";
 import UpdatePasswordLoggedIn from "../../components/UpdatePasswordLoggedIn";
 import Profile from "./Profile";
+import Attendance from "./Attendance";
+import ViewFeedback from "./ViewFeedback";
 
 const MENU_ITEMS = [
   { id: "home", label: "Home", component: null },
@@ -21,6 +23,8 @@ const MENU_ITEMS = [
   { id: "notice", label: "Notice", component: Notice },
   { id: "subjects", label: "Subjects", component: Subjects },
   { id: "admin", label: "Admin", component: Admin },
+  { id: "attendance", label: "Attendance", component: Attendance },
+  { id: "viewfeedback", label: "View Feedback", component: ViewFeedback },
   {
     id: "updatepassword",
     label: "Update Password",

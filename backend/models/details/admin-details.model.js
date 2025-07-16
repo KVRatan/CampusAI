@@ -29,7 +29,7 @@ const adminDetailsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    city: {
+    district: {
       type: String,
       required: true,
     },
@@ -92,13 +92,9 @@ const adminDetailsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-adminDetailsSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-});
 
-const adminDetails = mongoose.model("AdminDetail", adminDetailsSchema);
+const adminDetails = mongoose.models.AdminDetail ||
+ mongoose.model("AdminDetail", adminDetailsSchema);
 
 module.exports = adminDetails;
+

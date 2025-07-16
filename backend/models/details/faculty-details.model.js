@@ -12,7 +12,7 @@ const facultyDetailsSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -24,12 +24,13 @@ const facultyDetailsSchema = new mongoose.Schema(
     },
     profile: {
       type: String,
+      required: false,
     },
     address: {
       type: String,
       required: true,
     },
-    city: {
+    district: {
       type: String,
       required: true,
     },
@@ -93,12 +94,7 @@ const facultyDetailsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-facultyDetailsSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-});
+
 
 const facultyDetails = mongoose.model("FacultyDetail", facultyDetailsSchema);
 

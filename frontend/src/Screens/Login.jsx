@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FiLogIn } from "react-icons/fi";
 import axios from "axios";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { json, Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { setUserToken } from "../redux/actions";
 import { useDispatch } from "react-redux";
 import CustomButton from "../components/CustomButton";
 import axiosWrapper from "../utils/AxiosWrapper";
+
 const USER_TYPES = {
   STUDENT: "Student",
   FACULTY: "Faculty",
@@ -105,35 +106,45 @@ const Login = () => {
     setSearchParams({ type: userType });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!formData.email || !formData.password) {
-      toast.error("Please fill in all fields");
-      return;
+  if (!formData.email || !formData.password) {
+    toast.error("Please fill in all fields");
+    return;
+  }
+
+  try {
+    const response = await axiosWrapper.post(
+      `/${selected.toLowerCase()}/login`,
+      formData,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    const { token, student, faculty, admin } = response.data.data;
+
+  
+    localStorage.setItem("userToken", token);
+    localStorage.setItem("userType", selected);
+    dispatch(setUserToken(token));
+
+    
+    const userObj = student || faculty || admin;
+    if (userObj) {
+      localStorage.setItem("userData", JSON.stringify(userObj));
     }
 
-    try {
-      const response = await axiosWrapper.post(
-        `/${selected.toLowerCase()}/login`,
-        formData,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+    navigate(`/${selected.toLowerCase()}`);
+  } catch (error) {
+    toast.dismiss();
+    console.error(error);
+    toast.error(error.response?.data?.message || "Login failed");
+  }
+};
 
-      const { token } = response.data.data;
-      localStorage.setItem("userToken", token);
-      localStorage.setItem("userType", selected);
-      dispatch(setUserToken(token));
-      navigate(`/${selected.toLowerCase()}`);
-    } catch (error) {
-      toast.dismiss();
-      console.error(error);
-      toast.error(error.response?.data?.message || "Login failed");
-    }
-  };
-
+  
   useEffect(() => {
     const userToken = localStorage.getItem("userToken");
     if (userToken) {

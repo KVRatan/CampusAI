@@ -10,13 +10,21 @@ import Material from "./Material";
 import StudentFinder from "./StudentFinder";
 import UpdatePasswordLoggedIn from "../../components/UpdatePasswordLoggedIn";
 import Profile from "./Profile";
-
+import Attendance from "./Attendance";
+import FeedbackFaculty from  "./FeedbackFaculty";
 const MENU_ITEMS = [
   { id: "home", label: "Home", component: null },
   { id: "timetable", label: "Timetable", component: Timetable },
   { id: "material", label: "Material", component: Material },
   { id: "notice", label: "Notice", component: Notice },
   { id: "student info", label: "Student Info", component: StudentFinder },
+  { id: "attendance", label: "Attendance", component: Attendance },
+  { id: "feedback", label: "view Feedback", component: FeedbackFaculty },
+  {
+    id: "update password",
+    label: "Update Password",
+    component: UpdatePasswordLoggedIn,
+  },
   {
     id: "update password",
     label: "Update Password",

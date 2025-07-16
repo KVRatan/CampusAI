@@ -6,10 +6,14 @@ const noticeSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  content: {
+  description: {
     type: String,
     required: true,
   },
+  link: {
+  type: String,
+  default: "",
+ },
   type: {
     type: String,
     required: true,

@@ -6,21 +6,22 @@ const auth = async (req, res, next) => {
     let token = req.header("Authorization");
 
     if (!token || !token.startsWith("Bearer ")) {
-      return ApiResponse.unauthorized("Authentication token required").send(
-        res
-      );
+      return ApiResponse.unauthorized("Authentication token required").send(res);
     }
 
     token = token.split(" ")[1];
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
       if (!decoded.userId) {
         return ApiResponse.unauthorized("Invalid token format").send(res);
       }
 
       req.userId = decoded.userId;
+      req.role = decoded.role; // ✅ ADD THIS LINE
       req.token = token;
+
       next();
     } catch (jwtError) {
       console.error("JWT Error:", jwtError);

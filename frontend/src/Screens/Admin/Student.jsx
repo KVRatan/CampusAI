@@ -9,7 +9,7 @@ import CustomButton from "../../components/CustomButton";
 import NoData from "../../components/NoData";
 const Student = () => {
   const [searchParams, setSearchParams] = useState({
-    enrollmentNo: "",
+    regNo: "",
     name: "",
     semester: "",
     branch: "",
@@ -26,16 +26,19 @@ const Student = () => {
   const userToken = localStorage.getItem("userToken");
 
   const [formData, setFormData] = useState({
+    regNo: "",
     firstName: "",
     middleName: "",
     lastName: "",
+    email: "",
     phone: "",
     semester: "",
     branchId: "",
     gender: "",
     dob: "",
+    libraryId:"",
     address: "",
-    city: "",
+    district: "",
     state: "",
     pincode: "",
     country: "",
@@ -91,7 +94,7 @@ const Student = () => {
 
     // Check if any filter is selected
     if (
-      !searchParams.enrollmentNo &&
+      !searchParams.regNo &&
       !searchParams.name &&
       !searchParams.semester &&
       !searchParams.branch
@@ -221,16 +224,19 @@ const Student = () => {
 
   const editStudentHandler = (student) => {
     setFormData({
+      regNo: student.regNo || "",
       firstName: student.firstName || "",
       middleName: student.middleName || "",
       lastName: student.lastName || "",
+      email: student.email || "",
       phone: student.phone || "",
       semester: student.semester || "",
       branchId: student.branchId?._id || "",
       gender: student.gender || "",
       dob: student.dob?.split("T")[0] || "",
+      libraryId: student.libraryId || "",
       address: student.address || "",
-      city: student.city || "",
+      district: student.district || "",
       state: student.state || "",
       pincode: student.pincode || "",
       country: student.country || "",
@@ -277,16 +283,19 @@ const Student = () => {
 
   const resetForm = () => {
     setFormData({
+      regNo: "",
       firstName: "",
       middleName: "",
       lastName: "",
+      email: "",
       phone: "",
       semester: "",
       branchId: "",
       gender: "",
       dob: "",
+      libraryId: "",
       address: "",
-      city: "",
+      district: "",
       state: "",
       pincode: "",
       country: "",
@@ -323,8 +332,8 @@ const Student = () => {
               </label>
               <input
                 type="text"
-                name="enrollmentNo"
-                value={searchParams.enrollmentNo}
+                name="regNo"
+                value={searchParams.regNo}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter enrollment number"
@@ -393,11 +402,15 @@ const Student = () => {
 
         {!hasSearched && (
           <div className="text-center mt-8 text-gray-600 flex flex-col items-center justify-center my-10 bg-white p-10 rounded-lg mx-auto w-[40%]">
-            <img
-              src="/assets/filter.svg"
+          <img
+          src="/assets/filter.svg"
               alt="Select filters"
-              className="w-64 h-64 mb-4"
-            />
+          className="w-40 h-40 rounded-full object-cover ring-4 ring-blue-500 ring-offset-4"
+          onError={(e) => {
+             e.target.onerror = null;
+             e.target.src = "/assets/default.png";
+          }}
+        />
             Please select at least one filter to search students
           </div>
         )}
@@ -431,9 +444,8 @@ const Student = () => {
                           alt={`${student.firstName}'s profile`}
                           className="w-12 h-12 object-cover rounded-full"
                           onError={(e) => {
-                            e.target.src =
-                              "https://images.unsplash.com/photo-1744315900478-fa44dc6a4e89?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-                          }}
+                            e.target.onerror = null;
+                            e.target.src = "/assets/default.png";}}
                         />
                       </td>
                       <td className="px-6 py-4 border-b">
@@ -441,7 +453,7 @@ const Student = () => {
                         {student.lastName}
                       </td>
                       <td className="px-6 py-4 border-b">
-                        {student.enrollmentNo}
+                        {student.regNo}
                       </td>
                       <td className="px-6 py-4 border-b">{student.semester}</td>
                       <td className="px-6 py-4 border-b">
@@ -487,6 +499,18 @@ const Student = () => {
                 addStudentHandler();
               }}
             >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Register Number
+                </label>
+                <input
+                  type="text"
+                  value={formData.regNo}
+                  onChange={(e) => handleFormInputChange("regNo", e.target.value)}
+                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -528,24 +552,22 @@ const Student = () => {
                       handleFormInputChange("lastName", e.target.value)
                     }
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
+                    // required
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone
+                    Email
                   </label>
                   <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      handleFormInputChange("phone", e.target.value)
-                    }
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleFormInputChange("email", e.target.value)}
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
+              
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -567,6 +589,16 @@ const Student = () => {
                     ))}
                   </select>
                 </div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    phone
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.phone}
+                    onChange={(e) => handleFormInputChange("phone", e.target.value)}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -588,6 +620,12 @@ const Student = () => {
                     ))}
                   </select>
                 </div>
+
+                    <div>
+
+                    </div>
+
+
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -623,6 +661,20 @@ const Student = () => {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    library ID
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.libraryId}
+                    onChange={(e) =>
+                      handleFormInputChange("libraryId", e.target.value)
+                    }
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+               
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Blood Group
@@ -666,13 +718,13 @@ const Student = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    City
+                    district
                   </label>
                   <input
                     type="text"
-                    value={formData.city}
+                    value={formData.district}
                     onChange={(e) =>
-                      handleFormInputChange("city", e.target.value)
+                      handleFormInputChange("district", e.target.value)
                     }
                     className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required

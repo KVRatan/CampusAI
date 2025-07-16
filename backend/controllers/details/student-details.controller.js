@@ -7,15 +7,17 @@ const sendResetMail = require("../../utils/SendMail");
 
 const loginStudentController = async (req, res) => {
   try {
+
     const { email, password } = req.body;
 
     const user = await studentDetails.findOne({ email });
-
-    if (!user) {
+    
+     if (!user) {
       return ApiResponse.notFound("User not found").send(res);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+  
 
     if (!isPasswordValid) {
       return ApiResponse.unauthorized("Invalid password").send(res);
@@ -25,7 +27,7 @@ const loginStudentController = async (req, res) => {
       expiresIn: "1h",
     });
 
-    return ApiResponse.success({ token }, "Login successful").send(res);
+return ApiResponse.success({ token, student: user }, "Login successful").send(res);
   } catch (error) {
     console.error("Login Error: ", error);
     return ApiResponse.internalServerError().send(res);
@@ -52,31 +54,49 @@ const getAllDetailsController = async (req, res) => {
 
 const registerStudentController = async (req, res) => {
   try {
-    const profile = req.file.filename;
+    const profile = req.file ? req.file.filename : null;
 
-    const enrollmentNo = Math.floor(100000 + Math.random() * 900000);
-    const email = `${enrollmentNo}@gmail.com`;
+    const { regNo, email ,dob } = req.body;
+
+    if (!regNo ) {
+      return ApiResponse.badRequest("Register Number required").send(res);
+    }
+    if(!email)
+      return ApiResponse.badRequest("Email required").send(res);
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return ApiResponse.badRequest("Invalid email format").send(res);
+    }
+
+    const existingStudent = await studentDetails.findOne({
+      $or: [{ regNo }, { email }],
+    });
+
+    if (existingStudent) {
+      return ApiResponse.conflict("Email or Register Number already in use").send(res);
+    }
+  const dobDate = new Date(dob);
+  const formattedDob = `${String(dobDate.getDate()).padStart(2, '0')}-${String(dobDate.getMonth() + 1).padStart(2, '0')}-${dobDate.getFullYear()}`;
+    const plainPassword = req.body.password || formattedDob;
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
     const user = await studentDetails.create({
       ...req.body,
       profile,
-      password: "student123",
-      email,
-      enrollmentNo,
+      password: hashedPassword,
     });
 
     const sanitizedUser = await studentDetails
       .findById(user._id)
       .select("-__v -password");
 
-    return ApiResponse.created(sanitizedUser, "Student Details Added!").send(
-      res
-    );
+    return ApiResponse.created(sanitizedUser, "Student Registered Successfully!").send(res);
   } catch (error) {
-    console.error("Add Details Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+    console.error("Register Student Error: ", error);
+    return ApiResponse.internalServerError(error.message).send(res);
   }
 };
+
 
 const getMyDetailsController = async (req, res) => {
   try {
@@ -88,12 +108,13 @@ const getMyDetailsController = async (req, res) => {
     if (!user) {
       return ApiResponse.notFound("User not found").send(res);
     }
-
+  
     return ApiResponse.success(user, "My Details Found!").send(res);
   } catch (error) {
     console.error("Get My Details Error: ", error);
-    return ApiResponse.internalServerError().send(res);
+return ApiResponse.internalServerError(error.message).send(res);
   }
+
 };
 
 const updateDetailsController = async (req, res) => {
@@ -103,7 +124,7 @@ const updateDetailsController = async (req, res) => {
     }
 
     const updateData = { ...req.body };
-    const { email, phone, password, enrollmentNo } = updateData;
+    const { email, phone, password, regNo } = updateData;
 
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return ApiResponse.badRequest("Invalid email format").send(res);
@@ -141,10 +162,10 @@ const updateDetailsController = async (req, res) => {
       }
     }
 
-    if (enrollmentNo) {
+    if (regNo) {
       const existingStudent = await studentDetails.findOne({
         _id: { $ne: req.params.id },
-        enrollmentNo: enrollmentNo,
+        regNo: regNo,
       });
 
       if (existingStudent) {
@@ -295,35 +316,35 @@ const updatePasswordHandler = async (req, res) => {
 const searchStudentsController = async (req, res) => {
   try {
     const {
-      enrollmentNo,
-      name,
-      semester,
-      branch,
-      showMarks = false,
+      regNo = "",
+      name = "",
+      semester = "",
+      branch = "",
     } = req.body;
-    let query = {};
 
-    if (!enrollmentNo && !name && !semester && !branch) {
+    const query = {};
+
+    if (!regNo && !name && !semester && !branch) {
       return ApiResponse.badRequest("Select at least one filter").send(res);
     }
 
-    if (enrollmentNo) {
-      query.enrollmentNo = enrollmentNo;
+    if (regNo.trim() !== "") {
+      query.regNo = { $regex: regNo.trim(), $options: "i" };
     }
 
-    if (name) {
+    if (name.trim() !== "") {
       query.$or = [
-        { firstName: { $regex: name, $options: "i" } },
-        { middleName: { $regex: name, $options: "i" } },
-        { lastName: { $regex: name, $options: "i" } },
+        { firstName: { $regex: name.trim(), $options: "i" } },
+        { middleName: { $regex: name.trim(), $options: "i" } },
+        { lastName: { $regex: name.trim(), $options: "i" } },
       ];
     }
 
-    if (semester) {
+    if (semester !== "") {
       query.semester = semester;
     }
 
-    if (branch) {
+    if (branch !== "") {
       query.branchId = branch;
     }
 
@@ -331,15 +352,13 @@ const searchStudentsController = async (req, res) => {
       .find(query)
       .select("-password -__v")
       .populate("branchId")
-      .sort({ enrollmentNo: 1 });
+       .sort({regNo: 1});
 
     if (!students || students.length === 0) {
       return ApiResponse.notFound("No students found").send(res);
     }
 
-    return ApiResponse.success(students, "Students found successfully").send(
-      res
-    );
+    return ApiResponse.success(students, "Students found successfully").send(res);
   } catch (error) {
     console.error("Search Students Error: ", error);
     return ApiResponse.internalServerError().send(res);

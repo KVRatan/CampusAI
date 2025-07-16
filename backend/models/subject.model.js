@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const Subject = new mongoose.Schema(
+const SubjectSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
+    _id: {
+      type: String, // Using subject code as the _id
       required: true,
     },
-    code: {
+    name: {
       type: String,
       required: true,
     },
@@ -27,4 +27,4 @@ const Subject = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Subject", Subject);
+module.exports = mongoose.model("Subject", SubjectSchema);
